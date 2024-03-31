@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>File Upload</title>
+</head>
+<body>
+<h2>Upload a Text File</h2>
+<form id="uploadForm" enctype="multipart/form-data">
+  <input type="file" id="fileInput" name="file">
+  <label for="minWordLength">Minimum Word Length:</label>
+  <input type="number" id="minWordLength" name="minWordLength" value="5">
+  <button type="button" onclick="uploadFile()">Upload</button>
+</form>
+
+<div id="response"></div>
+
+<script>
+  function uploadFile() {
+    var fileInput = document.getElementById('fileInput');
+    var minWordLengthInput = document.getElementById('minWordLength');
+    var file = fileInput.files[0];
+    var minWordLength = minWordLengthInput.value;
+
+    if (!file) {
+      alert('Please select a file to upload.');
+      return;
+    }
+
+    var formData = new FormData();
+    formData.append('file', file);
+    formData.append('minWordLength', minWordLength);
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/load/WebLoadTxt/' + minWordLength, true);
+    xhr.setRequestHeader('Content-Type', 'text/plain');
+    xhr.onload = function () {
+      if (xhr.status === 200) {
+        var responseDiv = document.getElementById('response');
+        responseDiv.innerText = xhr.responseText;
+
+      } else {
+        document.getElementById('response').innerText = 'Failed to upload file: ' + xhr.responseText;
+      }
+    };
+    xhr.send(formData);
+  }
+</script>
+</body>
+</html>
